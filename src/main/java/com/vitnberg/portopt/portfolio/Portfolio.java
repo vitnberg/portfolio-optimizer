@@ -13,4 +13,11 @@ public final class Portfolio {
         this.weights = weights;
     }
 
+    public AssetUniverse getUniverse() {
+        return universe;
+    }
+
+    public double[] getWeights() {
+        return weights.clone();
+    }
 }
