@@ -18,16 +18,29 @@ public final class PortfolioAnalytics {
 
     public double expectedReturn(Portfolio p) {
         requireSameUniverse(p);
-        return weightedSum(p.getWeights(), meanReturns);
+        return expectedReturn(p.getWeights());
+    }
+
+    public double expectedReturn(double[] weights) {
+        return weightedSum(weights, meanReturns);
     }
 
     public double variance(Portfolio p) {
         requireSameUniverse(p);
-        return quadraticForm(covarianceMatrix, p.getWeights());
+        return variance(p.getWeights());
+    }
+
+    public double variance(double[] weights) {
+        return quadraticForm(covarianceMatrix, weights);
     }
 
     public double volatility(Portfolio p) {
-        return Math.sqrt(variance(p));
+        requireSameUniverse(p);
+        return volatility(p.getWeights());
+    }
+
+    public double volatility(double[] weights) {
+        return Math.sqrt(variance(weights));
     }
 
     private void requireSameUniverse(Portfolio p) {
