@@ -1,7 +1,7 @@
 package com.vitnberg.portopt.stats;
 
+import com.vitnberg.portopt.data.ReturnHistory;
 import com.vitnberg.portopt.math.MatrixUtils;
-import com.vitnberg.portopt.portfolio.AssetUniverse;
 
 import java.util.Objects;
 
@@ -10,20 +10,23 @@ public final class ReturnMomentsEstimator {
     private ReturnMomentsEstimator() {
     }
 
-    public static ReturnMoments returnMoments(AssetUniverse universe, double[][] dailyValues) {
-        Objects.requireNonNull(universe, "universe");
-        MatrixUtils.validateMatrixShape(dailyValues);
+    public static ReturnMoments returnMoments(ReturnHistory history) {
+        Objects.requireNonNull(history, "history");
+        double[][] returns = history.returns();
+        MatrixUtils.validateMatrixShape(returns);
 
-        if (dailyValues.length < 2) {
+        if (returns.length < 2) {
             throw new IllegalArgumentException("Need at least two observations");
         }
 
-        if (dailyValues[0].length != universe.size()) {
+        if (returns[0].length != history.universe().size()) {
             throw new IllegalArgumentException("Return row dimension mismatch");
         }
 
-        double[] means = means(dailyValues);
-        return new ReturnMoments(universe, means, covarianceMatrix(dailyValues, means));
+        double[] means = means(returns);
+        double[][] covarianceMatrix = covarianceMatrix(returns, means);
+
+        return new ReturnMoments(history.universe(), means, covarianceMatrix, history.frequency());
     }
 
     private static double[] means(double[][] dailyValues) {
@@ -69,4 +72,5 @@ public final class ReturnMomentsEstimator {
         }
         return result;
     }
+
 }

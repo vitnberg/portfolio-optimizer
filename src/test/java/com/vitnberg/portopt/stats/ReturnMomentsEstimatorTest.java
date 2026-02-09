@@ -1,5 +1,7 @@
 package com.vitnberg.portopt.stats;
 
+import com.vitnberg.portopt.data.DataFrequency;
+import com.vitnberg.portopt.data.ReturnHistory;
 import com.vitnberg.portopt.portfolio.Asset;
 import com.vitnberg.portopt.portfolio.AssetUniverse;
 import org.junit.jupiter.api.Test;
@@ -17,14 +19,14 @@ public class ReturnMomentsEstimatorTest {
 
     @Test
     void returnMomentsComputesCorrectMeanReturns() {
-        ReturnMoments moments = ReturnMomentsEstimator.returnMoments(assetUniverse(), historicReturns());
+        ReturnMoments moments = ReturnMomentsEstimator.returnMoments(returnHistory(assetUniverse(), historicReturns()));
         assertEquals(2.0, moments.getMeanReturn(ASSET1), EPS);
         assertEquals(0.0, moments.getMeanReturn(ASSET2), EPS);
     }
 
     @Test
     void returnMomentsComputesCorrectCovariances() {
-        ReturnMoments moments = ReturnMomentsEstimator.returnMoments(assetUniverse(), historicReturns());
+        ReturnMoments moments = ReturnMomentsEstimator.returnMoments(returnHistory(assetUniverse(), historicReturns()));
 
         assertEquals(1.0, moments.getCovariance(ASSET1, ASSET1), EPS);
         assertEquals(1.5, moments.getCovariance(ASSET1, ASSET2), EPS);
@@ -34,18 +36,22 @@ public class ReturnMomentsEstimatorTest {
 
     @Test
     void returnMomentsThrowsWhenInsufficientHistoricalData() {
-        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(assetUniverse(), insufficientHistoricReturns()));
+        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(returnHistory(assetUniverse(), insufficientHistoricReturns())));
     }
 
     @Test
     void returnMomentsThrowsWhenAssetDimensionMismatch() {
-        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(incompleteAssetUniverse(), historicReturns()));
-        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(overcompleteAssetUniverse(), historicReturns()));
+        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(returnHistory(incompleteAssetUniverse(), historicReturns())));
+        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(returnHistory(overcompleteAssetUniverse(), historicReturns())));
     }
 
     @Test
     void returnMomentsThrowsWhenRaggedHistoricalData() {
-        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(assetUniverse(), raggedHistoricReturns()));
+        assertThrows(IllegalArgumentException.class, () -> ReturnMomentsEstimator.returnMoments(returnHistory(assetUniverse(), raggedHistoricReturns())));
+    }
+
+    private static ReturnHistory returnHistory(AssetUniverse universe, double[][] values) {
+        return new ReturnHistory(universe, DataFrequency.DAILY, List.of(), values);
     }
 
     private static double[][] historicReturns() {

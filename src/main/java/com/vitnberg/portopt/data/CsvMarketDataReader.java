@@ -27,7 +27,7 @@ public final class CsvMarketDataReader {
         this.dateFormatter = dateFormatter;
     }
 
-    public CsvMarketData read(Path csvPath) throws IOException {
+    public ReturnHistory read(Path csvPath, DataFrequency frequency) throws IOException {
         CSVFormat format = CSVFormat.DEFAULT.builder()
                 .setHeader()
                 .setSkipHeaderRecord(true)
@@ -56,7 +56,7 @@ public final class CsvMarketDataReader {
                 rows.add(values);
             }
 
-            return new CsvMarketData(universe, List.copyOf(dates), rows.toArray(new double[0][]));
+            return new ReturnHistory(universe, frequency, dates, rows.toArray(new double[0][]));
         }
     }
 

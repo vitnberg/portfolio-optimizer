@@ -1,5 +1,6 @@
 package com.vitnberg.portopt.metrics;
 
+import com.vitnberg.portopt.data.DataFrequency;
 import com.vitnberg.portopt.portfolio.Asset;
 import com.vitnberg.portopt.portfolio.AssetUniverse;
 import com.vitnberg.portopt.portfolio.Portfolio;
@@ -48,11 +49,11 @@ public class PortfolioAnalyticsTest {
     }
 
     private static ReturnMoments returnMoments() {
-        return new ReturnMoments(ASSET_UNIVERSE, meanReturns(), covarianceMatrix());
+        return new ReturnMoments(ASSET_UNIVERSE, meanReturns(), covarianceMatrix(), DataFrequency.DAILY);
     }
 
     private static ReturnMoments returnMoments(AssetUniverse universe) {
-        return new ReturnMoments(universe, meanReturns(), covarianceMatrix());
+        return new ReturnMoments(universe, meanReturns(), covarianceMatrix(), DataFrequency.DAILY);
     }
 
     private static Portfolio portfolio() {

@@ -1,5 +1,6 @@
 package com.vitnberg.portopt.stats;
 
+import com.vitnberg.portopt.data.DataFrequency;
 import com.vitnberg.portopt.portfolio.Asset;
 import com.vitnberg.portopt.portfolio.AssetUniverse;
 import org.junit.jupiter.api.Test;
@@ -14,30 +15,31 @@ public class ReturnMomentsTest {
     private static final double EPS = 1e-12;
     private static final Asset ASSET_1 = new Asset("AAPL");
     private static final Asset ASSET_2 = new Asset("MSFT");
+    private static final DataFrequency DEFAULT_FREQUENCY = DataFrequency.DAILY;
 
     @Test
     void constructorThrowsIfMeanReturnsDimensionMismatch() {
         double[] wrongSizeMeanReturns = {0.01}; // wrong size: should be 2
 
-        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), wrongSizeMeanReturns, twoAssetCovarianceMatrix()));
+        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), wrongSizeMeanReturns, twoAssetCovarianceMatrix(), DEFAULT_FREQUENCY));
     }
 
     @Test
     void constructorThrowsIfCovarianceMatrixSizeMismatch() {
         double[][] wrongSizeCovarianceMatrix = {{0.1}}; // wrong size: should contain 2 rows and 2 columns
-        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), wrongSizeCovarianceMatrix));
+        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), wrongSizeCovarianceMatrix, DEFAULT_FREQUENCY));
 
         double[][] wrongFormCovarianceMatrix = {
                 {0.1},
                 {0.2}
         }; // wrong matrix form: should be a square matrix
-        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), wrongFormCovarianceMatrix));
+        assertThrows(IllegalArgumentException.class, () -> new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), wrongFormCovarianceMatrix, DEFAULT_FREQUENCY));
     }
 
     @Test
     void createDefensiveCopiesOfMeanReturns() {
         double[] inputMeanReturns = twoAssetReturns();
-        ReturnMoments instance = new ReturnMoments(twoAssetUniverse(), inputMeanReturns, twoAssetCovarianceMatrix());
+        ReturnMoments instance = new ReturnMoments(twoAssetUniverse(), inputMeanReturns, twoAssetCovarianceMatrix(), DEFAULT_FREQUENCY);
 
         inputMeanReturns[0] = -0.099;
         assertEquals(0.012, instance.getMeanReturns()[0], EPS);
@@ -50,7 +52,7 @@ public class ReturnMomentsTest {
     @Test
     void createDefensiveCopiesOfCovarianceMatrix() {
         double[][] inputCovarianceMatrix = twoAssetCovarianceMatrix();
-        ReturnMoments instance = new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), inputCovarianceMatrix);
+        ReturnMoments instance = new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), inputCovarianceMatrix, DEFAULT_FREQUENCY);
 
         inputCovarianceMatrix[0][0] = 0d;
         assertEquals(0.01, instance.getCovarianceMatrix()[0][0], EPS);
@@ -101,7 +103,7 @@ public class ReturnMomentsTest {
     }
 
     private ReturnMoments returnMoments() {
-        return new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), twoAssetCovarianceMatrix());
+        return new ReturnMoments(twoAssetUniverse(), twoAssetReturns(), twoAssetCovarianceMatrix(), DEFAULT_FREQUENCY);
     }
 
     private AssetUniverse twoAssetUniverse() {

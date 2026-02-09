@@ -1,24 +1,29 @@
 package com.vitnberg.portopt.stats;
 
+import com.vitnberg.portopt.data.DataFrequency;
 import com.vitnberg.portopt.math.MatrixUtils;
 import com.vitnberg.portopt.portfolio.Asset;
 import com.vitnberg.portopt.portfolio.AssetUniverse;
+
+import java.util.Objects;
 
 public class ReturnMoments {
 
     private final AssetUniverse universe;
     private final double[] meanReturns;
     private final double[][] covarianceMatrix;
+    private final DataFrequency frequency;
 
-    public ReturnMoments(AssetUniverse universe, double[] meanReturns, double[][] covarianceMatrix) {
+    public ReturnMoments(AssetUniverse universe, double[] meanReturns, double[][] covarianceMatrix, DataFrequency frequency) {
         if (universe.size() != meanReturns.length) {
             throw new IllegalArgumentException("Mean returns vector dimension mismatch");
         }
         MatrixUtils.validateSquareMatrix(covarianceMatrix, universe.size());
 
-        this.universe = universe;
-        this.meanReturns = meanReturns.clone();
-        this.covarianceMatrix = MatrixUtils.deepCopy(covarianceMatrix);
+        this.universe = Objects.requireNonNull(universe);
+        this.meanReturns = Objects.requireNonNull(meanReturns).clone();
+        this.covarianceMatrix = MatrixUtils.deepCopy(Objects.requireNonNull(covarianceMatrix));
+        this.frequency = Objects.requireNonNull(frequency);
     }
 
     public AssetUniverse getUniverse() {
@@ -31,6 +36,10 @@ public class ReturnMoments {
 
     public double[][] getCovarianceMatrix() {
         return MatrixUtils.deepCopy(covarianceMatrix);
+    }
+
+    public DataFrequency getFrequency() {
+        return frequency;
     }
 
     public double getMeanReturn(Asset asset) {
