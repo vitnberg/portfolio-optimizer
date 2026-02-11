@@ -1,10 +1,11 @@
-package com.vitnberg.portopt.portfolio;
+package com.vitnberg.portopt.optimization;
 
+import com.vitnberg.portopt.portfolio.PortfolioConstraints;
 import com.vitnberg.portopt.stats.ReturnMoments;
 
 import java.util.Objects;
 
-public final class MeanVarianceProblem {
+public abstract class MeanVarianceProblem {
 
     private final ReturnMoments returnMoments;
     private final MeanVarianceProblemType problemType;

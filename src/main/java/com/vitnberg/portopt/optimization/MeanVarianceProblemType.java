@@ -1,4 +1,4 @@
-package com.vitnberg.portopt.portfolio;
+package com.vitnberg.portopt.optimization;
 
 public enum MeanVarianceProblemType {
     MIN_VARIANCE,

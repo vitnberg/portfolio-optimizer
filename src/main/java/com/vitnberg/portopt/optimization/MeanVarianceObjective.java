@@ -1,4 +1,4 @@
-package com.vitnberg.portopt.portfolio;
+package com.vitnberg.portopt.optimization;
 
 import com.vitnberg.portopt.metrics.PortfolioAnalytics;
 import com.vitnberg.portopt.stats.ReturnMoments;
